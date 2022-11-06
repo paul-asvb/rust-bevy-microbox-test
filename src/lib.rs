@@ -1,6 +1,7 @@
 mod actions;
 mod player;
 mod webrtc;
+mod text; 
 
 use crate::actions::ActionsPlugin;
 use crate::player::PlayerPlugin;
@@ -23,7 +24,8 @@ impl Plugin for GamePlugin {
         app.add_state(GameState::Playing)
             .add_plugin(WebRtcPlugin)
             .add_plugin(ActionsPlugin)
-            .add_plugin(PlayerPlugin);
+            .add_plugin(PlayerPlugin)
+            .add_plugin(TextPlugin);
 
         // #[cfg(debug_assertions)]
         // {
