@@ -20,11 +20,12 @@ fn spawn_player(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-
     commands.spawn_bundle(Camera2dBundle::default());
     commands
         .spawn_bundle(MaterialMesh2dBundle {
-            mesh: meshes.add(Mesh::from(shape::Quad::new(Vec2::splat(0.2)))).into(),
+            mesh: meshes
+                .add(Mesh::from(shape::Quad::new(Vec2::splat(0.2))))
+                .into(),
             transform: Transform::default().with_scale(Vec3::splat(128.)),
             material: materials.add(ColorMaterial::from(Color::PURPLE)),
             ..default()

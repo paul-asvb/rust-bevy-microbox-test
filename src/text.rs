@@ -1,7 +1,5 @@
-use crate::actions::Actions;
 use crate::GameState;
 use bevy::prelude::*;
-use bevy::sprite::MaterialMesh2dBundle;
 
 pub struct TextPlugin;
 
@@ -23,16 +21,10 @@ fn spawn_text(mut commands: Commands, asset_server: Res<AssetServer>) {
         color: Color::WHITE,
     };
     let text_alignment = TextAlignment::CENTER;
-    // 2d camera
-    commands.spawn_bundle(Camera2dBundle::default());
-    // Demonstrate changing translation
-    commands
-        .spawn_bundle(Text2dBundle {
-            text: Text::from_section("translation", text_style.clone())
-                .with_alignment(text_alignment),
-            ..default()
-        })
-        .insert(AnimateTranslation);
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::from_section("translation", text_style.clone()).with_alignment(text_alignment),
+        ..default()
+    });
 }
 
 fn text_input(

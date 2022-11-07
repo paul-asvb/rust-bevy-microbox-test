@@ -1,15 +1,14 @@
 mod actions;
 mod player;
+mod text;
 mod webrtc;
-mod text; 
 
 use crate::actions::ActionsPlugin;
 use crate::player::PlayerPlugin;
 
 use bevy::app::App;
-#[cfg(debug_assertions)]
-use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
+use text::TextPlugin;
 use webrtc::WebRtcPlugin;
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
