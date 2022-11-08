@@ -4,7 +4,7 @@ use bevy::prelude::*;
 pub struct TextPlugin;
 
 #[derive(Component)]
-pub struct Player;
+pub struct TestText;
 
 impl Plugin for TextPlugin {
     fn build(&self, app: &mut App) {
@@ -21,10 +21,15 @@ fn spawn_text(mut commands: Commands, asset_server: Res<AssetServer>) {
         color: Color::WHITE,
     };
     let text_alignment = TextAlignment::CENTER;
-    commands.spawn_bundle(Text2dBundle {
-        text: Text::from_section("translation", text_style.clone()).with_alignment(text_alignment),
-        ..default()
-    });
+    commands
+        .spawn_bundle(Text2dBundle {
+            text: Text::from_section("translation", text_style.clone())
+                .with_alignment(text_alignment),
+                transform: Transform::from_translation(Vec3::new(128., 0., 0.)),
+
+            ..default()
+        })
+        .insert(TestText);
 }
 
 fn text_input(
