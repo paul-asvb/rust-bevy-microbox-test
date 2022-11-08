@@ -1,15 +1,17 @@
 use bevy::{prelude::*, tasks::IoTaskPool};
 use matchbox_socket::WebRtcSocket;
 
-use crate::text::TestText;
+use crate::{lobby::TestText, GameState};
 
 pub struct WebRtcPlugin;
 
 impl Plugin for WebRtcPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(start_matchbox_socket)
-            .add_system(wait_for_players)
-            .add_system(send_input);
+        app.add_system_set(
+            SystemSet::on_enter(GameState::Lobby).with_system(start_matchbox_socket),
+        )
+        .add_system_set(SystemSet::on_update(GameState::Lobby).with_system(accept_new_players));
+        // .add_system_set(SystemSet::on_update(GameState::Playing).with_system(accept_new_players));
     }
 }
 
@@ -23,38 +25,12 @@ fn start_matchbox_socket(mut commands: Commands) {
     commands.insert_resource(Some(socket));
 }
 
-fn wait_for_players(mut socket: ResMut<Option<WebRtcSocket>>) {
+fn accept_new_players(mut socket: ResMut<Option<WebRtcSocket>>) {
     let socket = socket.as_mut();
 
     if socket.is_none() {
         return;
     }
 
-    let peers = socket.as_mut().unwrap().accept_new_connections();
-
-    if peers.len() != 0 {
-        info!(" {:#?}", peers);
-    }
-}
-
-fn send_input(
-    mut socket: ResMut<Option<WebRtcSocket>>,
-    mut query: Query<&mut Text, With<TestText>>,
-) {
-    let socket = socket.as_mut();
-
-    if socket.is_none() {
-        return;
-    }
-
-    let peers = socket.as_mut().unwrap().accept_new_connections();
-    
-    if peers.len() != 0 {
-        info!(" {:#?}", peers);
-    }
-
-    if !query.is_empty() {
-        let mut text = query.single_mut();
-        text.sections[0].value = peers.len().to_string();
-    }
+    socket.as_mut().unwrap().accept_new_connections();
 }
