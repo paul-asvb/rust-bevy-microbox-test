@@ -20,7 +20,6 @@ fn spawn_player(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    commands.spawn_bundle(Camera2dBundle::default());
     commands
         .spawn_bundle(MaterialMesh2dBundle {
             mesh: meshes

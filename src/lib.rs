@@ -13,6 +13,7 @@ use webrtc::WebRtcPlugin;
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
 enum GameState {
+    EstablishConnection,
     Lobby,
     Playing,
 }
@@ -21,7 +22,7 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_state(GameState::Lobby)
+        app.add_state(GameState::EstablishConnection)
             .add_plugin(WebRtcPlugin)
             .add_plugin(ActionsPlugin)
             .add_plugin(PlayerPlugin)
