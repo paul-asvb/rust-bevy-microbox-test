@@ -9,7 +9,9 @@ pub struct TestText;
 
 impl Plugin for LobbyPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(GameState::Lobby).with_system(init_lobby))
+        app.add_system_set(SystemSet::on_enter(GameState::Lobby)
+        .with_system(init_lobby)
+        .with_system(receive_input))
             // .add_system_set(
             //     SystemSet::on_update(GameState::Lobby).with_system(receive_input), // .with_system(receive_input),
             // )
@@ -17,13 +19,7 @@ impl Plugin for LobbyPlugin {
     }
 }
 
-fn init_lobby(
-    mut socket: ResMut<Option<WebRtcSocket>>,
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
-    dbg!(socket);
-
+fn init_lobby(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/FiraSans-Bold.ttf");
     let text_style = TextStyle {
         font,
@@ -41,27 +37,3 @@ fn init_lobby(
         .insert(TestText);
 }
 
-fn receive_input(mut socket: ResMut<Option<WebRtcSocket>>) {
-    dbg!(socket);
-    // if socket.connected_peers().len() > 0 {
-    //     for (peer_id, payload) in socket.receive() {
-    //         info!("{} {:?}", peer_id, payload);
-    //     }
-    // }
-}
-
-fn send_input(mut socket: ResMut<WebRtcSocket>, mut char_evr: EventReader<ReceivedCharacter>) {
-    let socket = socket.as_mut();
-
-    let peers = socket.connected_peers();
-
-    for ev in char_evr.iter() {
-        info!("try to send to {:#?}", peers);
-        for peer in peers.iter() {
-            socket.send(
-                ev.char.to_string().as_bytes().to_vec().into_boxed_slice(),
-                peer,
-            );
-        }
-    }
-}
