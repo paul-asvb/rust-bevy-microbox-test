@@ -1,6 +1,11 @@
+use bevy::{prelude::*, tasks::IoTaskPool};
 use matchbox_socket::WebRtcSocket;
+use serde::{Deserialize, Serialize};
 
-use crate::GameState;
+#[derive(Serialize, Deserialize, Debug)]
+struct MyEvent {
+    value: usize,
+}
 
 pub struct WebRtcPlugin;
 
@@ -11,7 +16,7 @@ impl Plugin for WebRtcPlugin {
                 .label("init")
                 .with_system(create_socket)
                 .with_system(init_text),
-        )
+        );
     }
 }
 
@@ -32,12 +37,15 @@ fn init_text(mut commands: Commands, asset_server: Res<AssetServer>) {
     });
 }
 
-fn create_socket(mut commands: Commands) {
+fn create_socket() {
     let room_url = "ws://127.0.0.1:3536/something_random";
     info!("connecting to matchbox server: {:?}", room_url);
 
+    let mut events = Events::<MyEvent>::default();
+    let mut reader = events.get_reader();
+
     let background_task = async move {
-        let (mut socket, loop_fut) = WebRtcSocket::new(room_url);
+        let (mut socket, _) = WebRtcSocket::new(room_url);
 
         let mut peers = Vec::new();
 
@@ -46,17 +54,17 @@ fn create_socket(mut commands: Commands) {
                 peers.push(peer);
             }
 
-            while let Ok(msg) = outgoing_rx.try_recv() {
+            for event in reader.iter(&events) {
                 for peer in &peers {
-                    let packet = serde_json::to_vec(&msg).unwrap().into_boxed_slice();
+                    let packet = serde_json::to_vec(&event).unwrap().into_boxed_slice();
                     socket.send(packet, peer);
                 }
             }
 
             for (_peer, packet) in socket.receive() {
                 let packet = packet;
-                let msg = serde_json::from_slice(&packet).unwrap();
-                //incoming_tx.send(msg).await.unwrap();
+                let event: MyEvent = serde_json::from_slice(&packet).unwrap();
+                events.send(event);
             }
         }
     };

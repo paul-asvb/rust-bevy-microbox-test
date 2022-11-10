@@ -1,6 +1,5 @@
 use crate::GameState;
 use bevy::prelude::*;
-use matchbox_socket::WebRtcSocket;
 
 pub struct LobbyPlugin;
 
@@ -9,13 +8,10 @@ pub struct TestText;
 
 impl Plugin for LobbyPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(GameState::Lobby)
-        .with_system(init_lobby)
-        .with_system(receive_input))
-            // .add_system_set(
-            //     SystemSet::on_update(GameState::Lobby).with_system(receive_input), // .with_system(receive_input),
-            // )
-            ;
+        app.add_system_set(SystemSet::on_enter(GameState::Lobby).with_system(init_lobby));
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::Lobby).with_system(receive_input), // .with_system(receive_input),
+        // )
     }
 }
 
@@ -36,4 +32,3 @@ fn init_lobby(mut commands: Commands, asset_server: Res<AssetServer>) {
         })
         .insert(TestText);
 }
-
