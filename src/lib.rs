@@ -13,7 +13,7 @@ use webrtc::WebRtcPlugin;
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
 enum GameState {
-    EstablishConnection,
+    Initalizing,
     Lobby,
     Playing,
 }
@@ -22,7 +22,11 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_state(GameState::EstablishConnection)
+        app.add_state(GameState::Initalizing)
+            .add_startup_system_set_to_stage(
+                StartupStage::PreStartup,
+                SystemSet::new().with_system(init_camera),
+            )
             .add_plugin(WebRtcPlugin)
             .add_plugin(ActionsPlugin)
             .add_plugin(PlayerPlugin)
@@ -34,4 +38,8 @@ impl Plugin for GamePlugin {
         //         .add_plugin(LogDiagnosticsPlugin::default());
         // }
     }
+}
+
+fn init_camera(mut commands: Commands) {
+    commands.spawn_bundle(Camera2dBundle::default());
 }

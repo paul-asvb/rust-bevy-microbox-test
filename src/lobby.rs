@@ -8,7 +8,7 @@ pub struct TestText;
 
 impl Plugin for LobbyPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(GameState::Lobby).with_system(init_lobby));
+       // app.add_system_set(SystemSet::on_enter(GameState::Lobby).with_system(init_lobby));
         // .add_system_set(
         //     SystemSet::on_update(GameState::Lobby).with_system(receive_input), // .with_system(receive_input),
         // )
