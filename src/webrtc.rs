@@ -14,6 +14,7 @@ pub struct WebRtcPlugin;
 impl Plugin for WebRtcPlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(SystemSet::on_enter(GameState::Initalizing).with_system(create_socket));
+        app.add_system(end_state);
         // app.add_startup_system_set_to_stage(
         //     StartupStage::PreStartup,
         //     SystemSet::new().with_system(create_socket),
@@ -50,16 +51,23 @@ fn create_socket() {
                 // }
             }
 
-            for (_peer, packet) in socket.receive() {
-                // let packet = packet;
-                // let event: MyEvent = serde_json::from_slice(&packet).unwrap();
-                // events.send(event);
+            if peers.len() > 0 {
+                for (_peer, packet) in socket.receive() {
+                    let packet = packet;
+                    let event: MyEvent = serde_json::from_slice(&packet).unwrap();
+                    events.send(event);
+                }
             }
+
+            //
         }
     };
 
     IoTaskPool::get().spawn(background_task).detach();
-    //commands.insert_resource(Some(socket));
+}
+
+fn end_state(mut app_state: ResMut<State<GameState>>) {
+    app_state.set(GameState::Lobby).unwrap();
 }
 
 // fn accept_new_players(mut socket: ResMut<Option<WebRtcSocket>>) {
