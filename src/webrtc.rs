@@ -5,23 +5,27 @@ use serde::{Deserialize, Serialize};
 use crate::GameState;
 
 #[derive(Serialize, Deserialize, Debug)]
-struct MyEvent {
-    value: usize,
+pub struct MyEvent {
+    pub value: usize,
 }
 
 pub struct WebRtcPlugin;
 
 impl Plugin for WebRtcPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(GameState::Initalizing).with_system(create_socket));
-        app.add_system(end_state);
-        // app.add_startup_system_set_to_stage(
-        //     StartupStage::PreStartup,
-        //     SystemSet::new().with_system(create_socket),
-        // );
+        app.add_event::<MyEvent>()
+            //     .add_system_set(SystemSet::on_enter(GameState::Initalizing).with_system(create_socket))
+            //     .add_system(end_state);
+            .add_startup_system_set_to_stage(
+                StartupStage::PostStartup,
+                SystemSet::new().with_system(create_socket),
+            );
     }
 }
 
+//
+
+//fn create_socket(mut ev_writer: EventWriter<MyEvent>, mut ev_reader: EventReader<MyEvent>) {
 fn create_socket() {
     let room_url = "ws://127.0.0.1:3536/something_random";
     info!("connecting to matchbox server: {:?}", room_url);
@@ -67,7 +71,8 @@ fn create_socket() {
 }
 
 fn end_state(mut app_state: ResMut<State<GameState>>) {
-    app_state.set(GameState::Lobby).unwrap();
+    //app_state.replace(GameState::Lobby)
+    dbg!(app_state.current());
 }
 
 // fn accept_new_players(mut socket: ResMut<Option<WebRtcSocket>>) {

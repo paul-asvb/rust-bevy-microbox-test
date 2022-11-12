@@ -1,4 +1,4 @@
-use crate::GameState;
+use crate::{GameState, webrtc::MyEvent};
 use bevy::prelude::*;
 
 pub struct LobbyPlugin;
@@ -15,7 +15,11 @@ impl Plugin for LobbyPlugin {
     }
 }
 
-fn init_lobby(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn init_lobby(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut ev_writer: EventWriter<MyEvent>,
+) {
     info!("init_lobby");
     let font = asset_server.load("fonts/FiraSans-Bold.ttf");
     let text_style = TextStyle {
@@ -32,4 +36,7 @@ fn init_lobby(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..default()
         })
         .insert(TestText);
+
+    ev_writer.send(MyEvent { value: 123 });
+    //fn create_socket(mut ev_writer: EventWriter<MyEvent>, mut ev_reader: EventReader<MyEvent>) {
 }

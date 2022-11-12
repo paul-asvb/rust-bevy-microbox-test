@@ -22,7 +22,7 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_state(GameState::Initalizing)
+        app.add_state(GameState::Lobby)
             .add_startup_system_set_to_stage(
                 StartupStage::PreStartup,
                 SystemSet::new().with_system(init_camera),
