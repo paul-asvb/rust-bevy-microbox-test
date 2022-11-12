@@ -25,13 +25,13 @@ impl Plugin for WebRtcPlugin {
 
 //
 
-//fn create_socket(mut ev_writer: EventWriter<MyEvent>, mut ev_reader: EventReader<MyEvent>) {
-fn create_socket() {
+fn create_socket(mut ev_writer: EventWriter<MyEvent>, mut ev_reader: EventReader<MyEvent>) {
+    //fn create_socket() {
     let room_url = "ws://127.0.0.1:3536/something_random";
     info!("connecting to matchbox server: {:?}", room_url);
 
-    let mut events = Events::<MyEvent>::default();
-    let mut reader = events.get_reader();
+    //let mut events = Events::<MyEvent>::default();
+    //let mut reader = events.get_reader();
 
     let background_task = async move {
         let (mut socket, _) = WebRtcSocket::new(room_url);
@@ -47,7 +47,7 @@ fn create_socket() {
 
             //socket.wait_for_peers(1);
 
-            for event in reader.iter(&events) {
+            for event in ev_reader.iter() {
                 dbg!(event);
                 // for peer in &peers {
                 //     let packet = serde_json::to_vec(&event).unwrap().into_boxed_slice();
@@ -55,13 +55,13 @@ fn create_socket() {
                 // }
             }
 
-            if peers.len() > 0 {
-                for (_peer, packet) in socket.receive() {
-                    let packet = packet;
-                    let event: MyEvent = serde_json::from_slice(&packet).unwrap();
-                    events.send(event);
-                }
-            }
+            // if peers.len() > 0 {
+            //     for (_peer, packet) in socket.receive() {
+            //         let packet = packet;
+            //         let event: MyEvent = serde_json::from_slice(&packet).unwrap();
+            //         ev_writer.send(event);
+            //     }
+            // }
 
             //
         }

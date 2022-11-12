@@ -3656,6 +3656,7 @@ dependencies = [
  "bevy_asset_loader",
  "bevy_kira_audio",
  "embed-resource",
+ "futures",
  "image",
  "matchbox_socket",
  "rand",
