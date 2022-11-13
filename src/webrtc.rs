@@ -1,3 +1,5 @@
+use std::{rc::Rc, sync::Arc};
+
 use bevy::{prelude::*, tasks::IoTaskPool};
 use matchbox_socket::WebRtcSocket;
 use serde::{Deserialize, Serialize};
@@ -34,6 +36,8 @@ fn create_socket(mut ev_writer: EventWriter<MyEvent>, mut ev_reader: EventReader
     //let mut reader = events.get_reader();
 
     let background_task = async move {
+        let &mut ev_reader = &ev_reader;
+
         let (mut socket, _) = WebRtcSocket::new(room_url);
 
         let mut peers = Vec::new();
